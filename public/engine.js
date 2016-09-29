@@ -2,9 +2,8 @@
 function addRoute(path, name) {
   name = name.toLowerCase();
   
-  return $.getScript(`/routes/${name}.js`).then(() => {
-    console.log('got route for', name);
-    return $.getScript(`/controllers/${name}.js`).then(() => {
+  return $.getScript(`/pods/${name}/route.js`).then(() => {
+    return $.getScript(`/pods/${name}/controller.js`).then(() => {
       doAddRoute(path, name);
     });
   });
@@ -34,7 +33,7 @@ function passViewRenderingToRoute(name, renderViewIntoMainOutlet, data) {
 function renderViewWithData(name, data) {
   return new Promise(resolve => {
     console.log('rendering', name);
-    $.get(`/templates/${name}.html`, template => {
+    $.get(`/pods/${name}/template.html`, template => {
       template = `<div class="${name}-template">${template}</div>`;
       console.log('RENDERING:');
       console.log(nano(template, data));
