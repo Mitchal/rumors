@@ -1,0 +1,58 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: http://mozilla.github.io/nunjucks/ -->
+<!-- jade: http://jade-lang.com/ -->
+<!-- haml: http://haml.info/tutorial.html -->
+<!-- hbs(handlebars): http://handlebarsjs.com/expressions.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to HyperDev!</title>
+    <meta name="description" content="A cool thing made with HyperDev">
+    <link id="favicon" rel="icon" href="https://hyperdev.com/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+    </header>
+
+    <main>
+      <div id="outlet-main">
+        
+      </div>
+    </main>
+
+    <footer>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyABc0An7XX42FQ_0biy3LpwnjQDDk9k9vs",
+        authDomain: "rumors-d0208.firebaseapp.com",
+        databaseURL: "https://rumors-d0208.firebaseio.com",
+        storageBucket: "rumors-d0208.appspot.com",
+        messagingSenderId: "645464561398"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="/auth.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <script src="/vendor/jquery.router.js"></script>
+    <script src="/vendor/nano.js"></script>
+    <script src="/engine.js"></script>
+    <script src="/routes.js"></script>
+
+  </body>
+</html>
