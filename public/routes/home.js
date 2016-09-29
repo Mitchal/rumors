@@ -1,7 +1,7 @@
-function homeRoute() {
+function homeRoute(renderView) {
   console.log('HomeRoute');
-  return {
-    greeting: `Hello ${user.displayName}!`
-  };
-  
+  const name = window.user ? window.user.displayName : 'you';
+  renderView({
+    greeting: `Hello ${name}!`
+  });
 }

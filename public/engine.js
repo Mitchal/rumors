@@ -16,18 +16,21 @@ function doAddRoute(name) {
   const path = `/${name}`;
   
   $.router.add(path, name, function (data) {
-    const augmentedData = passDataThroughRouter(name, data);
-    renderViewWithData(name, augmentedData).then(view => {
-       passViewThroughController(name, view);
-       connectViewToMainOutlet(view);
-    });
+
+    const renderViewIntoMainOutlet = (augmentedData) => {
+      renderViewWithData(name, augmentedData).then(view => {
+        passViewThroughController(name, view);
+        connectViewToMainOutlet(view);
+      });
+    };
+    passViewRenderingToRouter(name, renderViewIntoMainOutlet, data);
   });
 }
 
-function passDataThroughRouter(name, data) {
+function passViewRenderingToRouter(name, renderViewIntoMainOutlet, data) {
   const routeFunctionName = name + 'Route';
   const routeFunction = window[routeFunctionName];
-  return routeFunction(data);
+  return routeFunction(renderViewIntoMainOutlet, data);
 }
 
 function renderViewWithData(name, data) {
