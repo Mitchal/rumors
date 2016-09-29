@@ -19,6 +19,7 @@ function doAddRoute(name) {
     const augmentedData = passDataThroughRouter(name, data);
     renderViewWithData(name, augmentedData).then(view => {
        passViewThroughController(name, view);
+       connectViewToMainOutlet(view);
     });
   });
 }
@@ -37,10 +38,13 @@ function renderViewWithData(name, data) {
       console.log('RENDERING:');
       console.log(nano(template, data));
       const view = $(nano(template, data));
-      $('#outlet-main').html(view);
       resolve(view);
     });
   });
+}
+
+function connectViewToMainOutlet(view) {
+  $('#outlet-main').html(view);
 }
 
 function passViewThroughController(name, view) {
