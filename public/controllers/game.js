@@ -1,4 +1,4 @@
-function gameController(view) {
+function gameController(view, data) {
   let isDrawing = false;
   let lines = [];
   let currentLine = [];
@@ -24,6 +24,7 @@ function gameController(view) {
     });
 
   $(document).mouseup(() => {
+    saveLines(lines, data);
     isDrawing = false;
     currentLine = [];
     lines.push(currentLine);
@@ -54,4 +55,9 @@ function getMousePos(canvas, evt) {
     evt.clientX - rect.left,
     evt.clientY - rect.top
   ];
+}
+
+
+function saveLines(lines, data) {
+  db.ref(`/games/${data.gameId}/`);
 }

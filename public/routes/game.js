@@ -3,7 +3,7 @@ function gameRoute(renderView, data) {
   const gameId = data.gameId;
   db.ref(`/games/${gameId}`).on('value', snapshot => {
     renderView({
-      id: gameId,
+      gameId,
       wordToDraw: 'programmer'
     });
   })

@@ -17,7 +17,7 @@ function doAddRoute(path, name) {
 
     const renderViewIntoMainOutlet = (augmentedData) => {
       renderViewWithData(name, augmentedData).then(view => {
-        passViewThroughController(name, view);
+        passViewThroughController(name, view, augmentedData);
         connectViewToMainOutlet(view);
       });
     };
@@ -48,11 +48,11 @@ function connectViewToMainOutlet(view) {
   $('#outlet-main').html(view);
 }
 
-function passViewThroughController(name, view) {
+function passViewThroughController(name, view, data) {
   const controllerFunctionName = name + 'Controller';
   const controllerFunction = window[controllerFunctionName];
   if (typeof controllerFunction === 'function') {
-      controllerFunction(view);
+      controllerFunction(view, data);
   }
   else {
     console.warn('could not find controller function "' + controllerFunctionName + '"');
