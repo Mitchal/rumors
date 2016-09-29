@@ -1,3 +1,8 @@
 function lobbyRoute() {
-  return {greeting: 'Lobby!'};
+  games = renderGames();
+  return {greeting: 'Lobby!', games};
+}
+
+function renderGames() {
+  
 }
