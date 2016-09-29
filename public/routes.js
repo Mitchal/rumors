@@ -1,5 +1,6 @@
 console.log('running routes.js');
-addRoute('home').then(() => $.router.go('home'), () => {
+addRoute('/home', 'home').then(() => $.router.go('/home'), () => {
   alert('falid to add route home');
 });
-addRoute('lobby');
+addRoute('/lobby', 'lobby');
+addRoute('/game/:gameId', 'game');

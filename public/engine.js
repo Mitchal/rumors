@@ -1,20 +1,18 @@
 
-function addRoute(name) {
+function addRoute(path, name) {
   name = name.toLowerCase();
   
   return $.getScript(`/routes/${name}.js`).then(() => {
     console.log('got route for', name);
     return $.getScript(`/controllers/${name}.js`).then(() => {
-      doAddRoute(name);
+      doAddRoute(path, name);
     });
   });
 }
 
-function doAddRoute(name) {
-  console.log('adding', name);
-    
-  const path = `/${name}`;
-  
+function doAddRoute(path, name) {
+  console.log('adding', name, 'at path', path);
+
   $.router.add(path, name, function (data) {
 
     const renderViewIntoMainOutlet = (augmentedData) => {
@@ -23,11 +21,11 @@ function doAddRoute(name) {
         connectViewToMainOutlet(view);
       });
     };
-    passViewRenderingToRouter(name, renderViewIntoMainOutlet, data);
+    passViewRenderingToRoute(name, renderViewIntoMainOutlet, data);
   });
 }
 
-function passViewRenderingToRouter(name, renderViewIntoMainOutlet, data) {
+function passViewRenderingToRoute(name, renderViewIntoMainOutlet, data) {
   const routeFunctionName = name + 'Route';
   const routeFunction = window[routeFunctionName];
   return routeFunction(renderViewIntoMainOutlet, data);
