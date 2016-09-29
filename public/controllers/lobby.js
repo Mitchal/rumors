@@ -12,6 +12,9 @@ function lobbyController(view, data) {
 }
 
 function renderGames($ul, games) {
+  if (!games) {
+    return;
+  }
   Object.keys(games).forEach(gameId => {
     $ul.append(renderGame(games[gameId]));
   });
@@ -35,7 +38,7 @@ function joinGame(gameId) {
     throw new Error('no user id');
   }
 
-  db.ref(`games/${gameId}/players`).push(userId);
+  db.ref(`games/${gameId}/players/${userId}`).set(true);
   db.ref(`players/${userId}/currentGame`).set(gameId);
   $.router.go(`/game/${gameId}`);
 }
