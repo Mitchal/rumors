@@ -8,10 +8,13 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+}
 
-.game__canvas {
-  width: 500px;
-  height: 500px;
+.game__canvas-container {
+  display: inline-block;
   border: 1px solid green;
   cursor: crosshair;
+  margin: 0 auto;
 }

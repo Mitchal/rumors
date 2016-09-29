@@ -1,40 +1,57 @@
 function gameController(view) {
   let isDrawing = false;
-  let points = [];
+  let lines = [];
+  let currentLine = [];
+  lines.push(currentLine);
 
-  const canvas = view.find('.game__canvas');
+  const $canvas = view.find('.game__canvas');
+  const canvas = $canvas[0];
   const canvasContext = getCanvasContext(canvas);
 
-  canvas
+  $canvas
     .mousedown(e => {
       isDrawing = true;
+      const point = getMousePos(canvas, e);
+      canvasContext.moveTo(point[0], point[1]);
     })
     .mousemove(e => {
       if (isDrawing) {
-        console.log('drawing');
-        const point = [e.offsetX, e.offsetY];
-        points.push(point);
-        renderPoints(canvasContext, points);
+        const point = getMousePos(canvas, e);
+        currentLine.push(point);
+        canvasContext.lineTo(point[0], point[1]);
+        canvasContext.stroke();
       }
-    })
+    });
 
+  $(document).mouseup(() => {
+    isDrawing = false;
+    currentLine = [];
+    lines.push(currentLine);
+  });
 }
 
 function getCanvasContext(canvas) {
-  const result = canvas[0].getContext('2d');
-  result.lineWidth = 10;
+  const result = canvas.getContext('2d');
+  result.lineWidth = 7;
   result.lineJoin = result.lineCap = 'round';
   return result;
 }
 
-function renderPoints(canvasContext, points) {
-  canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
-  canvasContext.beginPath();
-  canvasContext.moveTo(points[0][0], points[0][1]);
-  for (var i = 1; i < points.length; i++) {
-    console.log('rendering point', points[i][0], points[i][1]);
-    canvasContext.lineTo(points[i][0], points[i][1]);
-  }
-  canvasContext.stroke();
+function renderPoints(canvasContext, lines) {
+  for (var i = 0; i < lines.length; i++) {
+    const line = lines[i];
 
+    for (var j = 1; j < line.length; j++) {
+      canvasContext.lineTo(line[j][0], line[j][1]);
+    }
+    canvasContext.stroke();
+  }
+}
+
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return [
+    evt.clientX - rect.left,
+    evt.clientY - rect.top
+  ];
 }
