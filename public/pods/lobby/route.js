@@ -1,5 +1,5 @@
-function lobbyRoute(renderView) {
-  db.ref(`games`).on('value', snapshot => {
+window.lobbyRoute = (renderView) => {
+  db.ref(`games`).once('value', snapshot => {
     renderView({greeting: 'Lobby!', games: snapshot.val()});
   })
-}
+};
