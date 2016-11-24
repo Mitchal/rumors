@@ -2,7 +2,7 @@ window.gameController = (view, data) => {
   const lines = data.turn.lines || [];
   renderLines(view, lines);
 
-  if (!data.turn.isDone) {
+  if (data.turn.mode === 'draw' && !data.turn.isDone) {
     enableDrawing(view, lines, data);
   }
 };

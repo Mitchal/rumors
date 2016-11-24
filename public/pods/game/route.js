@@ -3,9 +3,11 @@ var gameId;
 window.gameRoute = (renderView, data) => {
   console.log('GameRoute');
   gameId = data.gameId;
-  getPlayerDbRef().on('value', snapshot => {
-    const player = snapshot.val() || {};
-    const turn = player.turns[player.currentTurn];
+  getGameDbRef().on('value', snapshot => {
+    const game = snapshot.val();
+    const currentTurn = game.currentTurn;
+
+    const turn = game.players[window.user.uid].turns[currentTurn];
 
     renderView({
       gameId,
@@ -13,21 +15,21 @@ window.gameRoute = (renderView, data) => {
       saveLines
     });
 
-    if (turn.mode === 'draw') {
+    if (turn.mode === 'draw' && !turn.isDone) {
       beginDrawCountdown();
     }
   });
 };
 
-function getPlayerDbRef() {
-  return db.ref(`/games/${gameId}/players/${window.user.uid}`);
+function getGameDbRef() {
+  return db.ref(`/games/${gameId}`);
 }
 
 function saveLines(lines) {
-  const playerDbRef = getPlayerDbRef();
-  playerDbRef.once('value', snapshot => {
-    const player = snapshot.val();
-    playerDbRef.update({ [`/turns/${player.currentTurn}/lines`]: lines});
+  const gameDbRef = getGameDbRef();
+  gameDbRef.once('value', snapshot => {
+    const game = snapshot.val();
+    gameDbRef.update({ [`/players/${window.user.uid}/turns/${game.currentTurn}/lines`]: lines});
   });
 }
 
@@ -47,9 +49,49 @@ function beginDrawCountdown() {
 }
 
 function setPlayerIsDone() {
-  const playerDbRef = getPlayerDbRef();
-  playerDbRef.once('value', snapshot => {
-    const player = snapshot.val();
-    playerDbRef.update({ [`/turns/${player.currentTurn}/isDone`]: true});
+  const gameDbRef = getGameDbRef();
+  gameDbRef.once('value', snapshot => {
+    const game = snapshot.val();
+    gameDbRef.update({ [`/players/${window.user.uid}/turns/${game.currentTurn}/isDone`]: true})
+      .then(endTurnIfAllPlayersAreDone);
+  });
+}
+
+
+function endTurnIfAllPlayersAreDone() {
+  const gameDbRef = getGameDbRef();
+
+  gameDbRef.once('value', snapshot => {
+    const game = snapshot.val();
+    const currentTurn = game.currentTurn;
+
+    gameDbRef.child('players').once('value', playersSnapshot => {
+      const playerSnapshots = [];
+      const oneIsNotDone = playersSnapshot.forEach((playerSnapshot) => {
+        const player = playerSnapshot.val();
+        if (!player.turns[currentTurn].isDone) {
+          return true;
+        }
+        playerSnapshots.push(playerSnapshot);
+      });
+
+      if (!oneIsNotDone) {
+        gameDbRef.child('currentTurn').transaction(currentTurn => {
+          const nextTurn = currentTurn + 1;
+
+          var n = playerSnapshots.length;
+          for (var i = 0; i < n; i++) {
+            var playerSnapshot = playerSnapshots[i];
+            var nextIndex = (i === n-1) ? 0 : i + 1;
+            var nextPlayerSnapshot = playerSnapshots[nextIndex];
+            nextPlayerSnapshot.ref.child(`/turns/${nextTurn}/`).set({mode: 'guess', lines: playerSnapshot.val().turns[currentTurn].lines, isDone: false});
+          }
+
+          return nextTurn;
+        });
+      }
+
+    });
+
   });
 }
